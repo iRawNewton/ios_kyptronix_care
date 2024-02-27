@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'package:ios_kyptronix_care/screens/dashboard/admin/emailfunc.dart';
 import 'package:ios_kyptronix_care/screens/dashboard/admin/emailwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:html_editor_enhanced/html_editor.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 
 import '../../../constant/string_file.dart';
 
@@ -23,6 +24,7 @@ class _MyAdminEmailState extends State<MyAdminEmail> {
   TextEditingController subject = TextEditingController();
   TextEditingController body = TextEditingController();
   final HtmlEditorController controller = HtmlEditorController();
+
   dynamic data;
   bool xLoading = false;
   late Future getMethod;
@@ -43,6 +45,118 @@ class _MyAdminEmailState extends State<MyAdminEmail> {
       getMethod = getEmailContact();
     });
     super.initState();
+  }
+
+  Future<void> sendEmailAdminPm(
+      context, toText, ccText, bccText, subject, body) async {
+    try {
+      var userEmail = 'kyptronix@gmail.com';
+      var message = Message();
+      message.subject = subject;
+      // summary
+      message.html = body;
+
+      // message.html = 'This is test body';
+      message.from = Address(userEmail.toString(), 'Souvik Karmakar');
+
+      // receipents
+      List<String> emails = toText.split(',');
+      List<Address> recipients = [];
+      for (String email in emails) {
+        recipients.add(Address(email.trim()));
+      }
+      message.recipients = recipients;
+
+      // cc receipents
+      List<String> ccEmails = ccText.split(',');
+      List<Address> ccRecipient = [];
+      if (ccEmails.isNotEmpty) {
+        for (String ccEmail in ccEmails) {
+          recipients.add(Address(ccEmail.trim()));
+        }
+        message.ccRecipients = ccRecipient;
+      }
+
+      // bcc receipents
+      List<String> bccEmails = bccText.split(',');
+      List<Address> bccRecipient = [];
+      if (bccText.isNotEmpty) {
+        for (String bccEmail in bccEmails) {
+          recipients.add(Address(bccEmail.trim()));
+        }
+        message.bccRecipients = bccRecipient;
+      }
+
+      var smtpServer = gmail(userEmail, 'mdotpxcikmlqmmch');
+      send(message, smtpServer).then((value) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            showCloseIcon: true,
+            closeIconColor: Colors.white,
+            content: const Text(
+              'Email sent',
+              style: TextStyle(
+                fontFamily: 'fontTwo',
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: Colors.green.shade400,
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior: SnackBarBehavior.floating,
+            width: MediaQuery.of(context).size.width * 0.8,
+          ),
+        );
+        /* 
+      (
+        (value) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            showCloseIcon: true,
+            closeIconColor: Colors.white,
+            content: const Text(
+              'Email sent',
+              style: TextStyle(
+                fontFamily: 'fontTwo',
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: Colors.green.shade400,
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            behavior: SnackBarBehavior.floating,
+            width: MediaQuery.of(context).size.width * 0.8,
+          ),
+        ),
+      ) */
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+            style: const TextStyle(
+              fontFamily: 'fontTwo',
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: Colors.red,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          behavior: SnackBarBehavior.floating,
+          width: MediaQuery.of(context).size.width * 0.8,
+        ),
+      );
+    }
   }
 
   @override
@@ -245,18 +359,59 @@ class _MyAdminEmailState extends State<MyAdminEmail> {
                     backgroundColor: MaterialStatePropertyAll(Colors.blue),
                   ),
                   onPressed: () async {
-                    var txt = await controller.getText();
-                    setState(() {
-                      body.text = txt;
-                      sendEmailAdmin(
-                        context,
-                        toAddress,
-                        ccAddress,
-                        bccAddress,
-                        subject,
-                        body,
+                    if (toAddress.text.isNotEmpty &&
+                        ccAddress.text.isNotEmpty &&
+                        bccAddress.text.isNotEmpty &&
+                        subject.text.isNotEmpty) {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              CircularProgressIndicator(),
+                            ],
+                          ),
+                        ),
                       );
-                    });
+
+                      var txt = await controller.getText();
+                      setState(() {
+                        body.text = txt;
+                        sendEmailAdminPm(
+                          context,
+                          toAddress.text,
+                          ccAddress.text,
+                          bccAddress.text,
+                          subject.text,
+                          body.text,
+                        );
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          showCloseIcon: true,
+                          closeIconColor: Colors.white,
+                          content: const Text(
+                            'Fields cannot be empty',
+                            style: TextStyle(
+                              fontFamily: 'fontTwo',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          backgroundColor: Colors.red.shade400,
+                          elevation: 8,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          width: MediaQuery.of(context).size.width * 0.8,
+                        ),
+                      );
+                    }
 
                     // toAddress.clear();
                     // ccAddress.clear();

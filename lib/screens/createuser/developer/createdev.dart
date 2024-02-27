@@ -62,6 +62,7 @@ class _MyDevNewUserState extends State<MyDevNewUser> {
         email,
         'kyptronix.dev@gmail.com',
         fullname,
+        password,
       );
       username.clear();
       password.clear();
@@ -422,6 +423,27 @@ class _MyDevNewUserState extends State<MyDevNewUser> {
                               },
                               child: const Text(
                                 'Digital Marketing Expert',
+                                style: TextStyle(
+                                  fontFamily: 'fontThree',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            ElevatedButton(
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStatePropertyAll(
+                                    Colors.grey.shade300),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  designation.text = 'Video Editor';
+                                });
+                              },
+                              child: const Text(
+                                'Video Editor',
                                 style: TextStyle(
                                   fontFamily: 'fontThree',
                                   fontSize: 14,

@@ -87,12 +87,12 @@ class _AuthQuestionaireState extends State<AuthQuestionaire> {
                 ? QuestionDev(id: widget.developerIdTemp)
                 : (data[0]['cli_designation'] == 'Graphic Designer')
                     ? const QuestionDefault()
-                    : (data[0]['cli_designation'] == 'SMO'
+                    : (data[0]['cli_designation'] == 'SMO')
                         ? QuestionSmo(id: widget.developerIdTemp)
                         : (data[0]['cli_designation'] ==
                                 'Digital Marketing Expert')
                             ? const QuestionDefault()
-                            : QuestionSeo(id: widget.developerIdTemp))
+                            : QuestionSeo(id: widget.developerIdTemp)
             : const Center(
                 child: Text(
                 'Please wait loading...',

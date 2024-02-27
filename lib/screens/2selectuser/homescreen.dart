@@ -60,7 +60,7 @@ class _MyUsersState extends State<MyUsers> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 30),
+                const SizedBox(height: 15.0),
                 // logo
                 GestureDetector(
                   onLongPress: () {

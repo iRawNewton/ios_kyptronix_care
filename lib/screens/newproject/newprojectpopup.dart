@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ios_kyptronix_care/screens/newproject/newproject.dart';
+import 'package:ios_kyptronix_care/screens/newproject/newprojectemailtoclient.dart';
 import 'package:ios_kyptronix_care/screens/newproject/newprojectwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,11 +17,13 @@ class MyNewProjectPopUp extends StatefulWidget {
     super.key,
     required this.id,
     required this.email,
+    required this.name,
     required this.gross,
     required this.paid,
   });
   final String id;
   final String email;
+  final String name;
   final String gross;
   final String paid;
 
@@ -123,6 +126,11 @@ class _MyNewProjectPopUpState extends State<MyNewProjectPopUp> {
     });
 
     getDeviceId(projectDevId.text);
+
+    await http.post(Uri.parse('$tempUrl/notification/createNotify.php'), body: {
+      'email_id': widget.email,
+    });
+
     var response =
         await http.post(Uri.parse('$tempUrl/project/createProject.php'), body: {
       'proj_name': projectName.text,
@@ -138,6 +146,7 @@ class _MyNewProjectPopUpState extends State<MyNewProjectPopUp> {
     });
 
     if (response.statusCode == 200) {
+      await sendNewProjectEmailToClient(context, widget.email, widget.name);
       sendCustomNotificationToUser(context, 'New Project',
           'A new project has been assigned to you.', deviceId);
       await http.post(Uri.parse('$tempUrl/sales/deletenewProject.php'), body: {
@@ -274,7 +283,7 @@ class _MyNewProjectPopUpState extends State<MyNewProjectPopUp> {
                     Colors.greenAccent,
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (projectName.text != '' &&
                       projectDesc.text != '' &&
                       projectStartDate.text != '' &&

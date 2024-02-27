@@ -21,6 +21,7 @@ import '../../../constant/string_file.dart';
 import '../../../notification/notificationui/notificationui.dart';
 import '../../2selectuser/homescreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:gap/gap.dart';
 
 import '../client/colorwidget.dart';
 
@@ -37,6 +38,10 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
   final TextEditingController remarksText = TextEditingController();
   final TextEditingController linkText = TextEditingController();
   final TextEditingController projName = TextEditingController();
+  final TextEditingController sendTo = TextEditingController();
+  final TextEditingController ccTo = TextEditingController();
+  final TextEditingController nameText = TextEditingController();
+
   String pmId = '';
   String pmName = '';
   bool isVisible = true;
@@ -52,11 +57,15 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
   bool showRemarks = true;
   bool showRemarksLoading = true;
   Timer? timer;
+
+  bool paymentLogLoading = true;
+  bool logShowRecord = false;
   // for chat
   late Map<String, dynamic> userMap;
   final FirebaseAuth auth = FirebaseAuth.instance;
   // future method
   late Future getFutureMethod;
+  late Future paymentLogVariable;
 
   Stream<Object?>? getFutureMethodforModal;
   var testVariable = '';
@@ -64,6 +73,8 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
   // for remarks
   dynamic remarksData;
   String notiNumber = '';
+
+  String currentProjectId = '';
 
   Future<void> getPmName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -184,6 +195,7 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
   }
 
   dynamic data = [];
+  dynamic logData = [];
 
   Future<void> getProjectList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -401,8 +413,41 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
     } else {}
   }
 
+// ! Payment logs
+  Future<void> getPaymentLogs() async {
+    var response = await http.post(
+      Uri.parse('$tempUrl/payment/payment_logs.php'),
+      body: {
+        'project_id': currentProjectId,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      if (response.body.trim() == 'Found Nothing') {
+        setState(() {
+          logData = [];
+          paymentLogLoading = false;
+          logShowRecord = false;
+          // logData = jsonDecode(response.body);
+
+          // paymentLogLoading = false;
+          // logShowRecord = true;
+        });
+      } else {
+        setState(() {
+          logData = jsonDecode(response.body);
+          paymentLogLoading = false;
+          logShowRecord = true;
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
+    sendTo.text = 'gaurabroy.kyptronix@gmail.com';
+    ccTo.text = 'kyptronix.dev@gmail.com';
+    nameText.text = 'Souvik Karmakar';
     getPmName();
     Timer.periodic(
       const Duration(seconds: 5),
@@ -504,6 +549,17 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
+                        // ElevatedButton(
+                        //     onPressed: () {
+                        //       sendEmailToNewClient(
+                        //         context,
+                        //         sendTo,
+                        //         ccTo,
+                        //         nameText,
+                        //       );
+                        //     },
+                        //     child: const Text('data')),
+                        // * ===================================
                         // ElevatedButton(
                         //     onPressed: () {
                         //       sendCustomNotificationToUser(
@@ -1006,6 +1062,15 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
                                                     showRemarks = false;
                                                     getRemarks(
                                                         data[index]['id']);
+
+                                                    // ! for payment logs
+                                                    setState(() {
+                                                      // paymentLogVariable =
+                                                      //     getPaymentLogs();
+                                                      currentProjectId =
+                                                          data[index]['id']
+                                                              .toString();
+                                                    });
                                                     showModalBottomSheet(
                                                         useSafeArea: true,
                                                         isScrollControlled:
@@ -1062,46 +1127,177 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
                                                                     ),
                                                                   ),
                                                                   const Divider(),
-                                                                  // cost
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: Text(
-                                                                      'Total: ${data[index]['proj_gross']}',
-                                                                      style: const TextStyle(
-                                                                          fontFamily:
-                                                                              'fontOne',
-                                                                          fontSize:
-                                                                              14),
-                                                                    ),
+                                                                  // Amount
+                                                                  Row(
+                                                                    children: [
+                                                                      Column(
+                                                                        mainAxisSize:
+                                                                            MainAxisSize.min,
+                                                                        children: [
+                                                                          Align(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            child:
+                                                                                Text(
+                                                                              'Total: ${data[index]['proj_gross']}',
+                                                                              style: const TextStyle(fontFamily: 'fontOne', fontSize: 14),
+                                                                            ),
+                                                                          ),
+                                                                          Align(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            child:
+                                                                                Text(
+                                                                              'Paid: ${data[index]['proj_paid']}',
+                                                                              style: const TextStyle(fontFamily: 'fontOne', fontSize: 14),
+                                                                            ),
+                                                                          ),
+                                                                          Align(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            child:
+                                                                                Text(
+                                                                              'Pending: ${data[index]['proj_balance']}',
+                                                                              style: const TextStyle(fontFamily: 'fontOne', fontSize: 14),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      const Spacer(),
+                                                                      ElevatedButton.icon(
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor:
+                                                                                Colors.green,
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadiusDirectional.circular(8.0),
+                                                                            ),
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            setState(() {
+                                                                              paymentLogVariable = getPaymentLogs();
+                                                                              // currentProjectId = data[index]['id'].toString();
+                                                                            });
+
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (context) {
+                                                                                return Dialog(
+                                                                                  shape: RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.circular(10.0),
+                                                                                  ),
+                                                                                  elevation: 0,
+                                                                                  child: Container(
+                                                                                    padding: const EdgeInsets.symmetric(
+                                                                                      horizontal: 10.0,
+                                                                                    ),
+                                                                                    // Remove the height property to let it adjust based on content
+                                                                                    // height: MediaQuery.sizeOf(context).height * 0.5,
+                                                                                    width: MediaQuery.sizeOf(context).width,
+                                                                                    child: FutureBuilder(
+                                                                                      future: paymentLogVariable,
+                                                                                      builder: (context, snapshot) {
+                                                                                        if (snapshot.connectionState == ConnectionState.done) {
+                                                                                          if (logShowRecord) {
+                                                                                            return Column(
+                                                                                              children: [
+                                                                                                const Gap(16.0),
+                                                                                                Text(
+                                                                                                  'Total Amount: ${logData[0]['totalAmount']}',
+                                                                                                  style: const TextStyle(
+                                                                                                    fontSize: 12,
+                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                    color: Colors.black,
+                                                                                                  ),
+                                                                                                  textAlign: TextAlign.justify,
+                                                                                                ),
+                                                                                                ListView.builder(
+                                                                                                  shrinkWrap: true,
+                                                                                                  itemCount: logData.length,
+                                                                                                  itemBuilder: (context, index) {
+                                                                                                    if (logData.length > 0) {
+                                                                                                      return Padding(
+                                                                                                        padding: const EdgeInsets.all(8.0),
+                                                                                                        child: Container(
+                                                                                                          decoration: BoxDecoration(
+                                                                                                            color: Colors.blue.shade200,
+                                                                                                            borderRadius: BorderRadius.circular(14.0),
+                                                                                                          ),
+                                                                                                          width: MediaQuery.sizeOf(context).width * 0.4,
+                                                                                                          child: Padding(
+                                                                                                            padding: const EdgeInsets.all(12.0),
+                                                                                                            child: Column(
+                                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                              children: [
+                                                                                                                Align(
+                                                                                                                  alignment: Alignment.topCenter,
+                                                                                                                  child: Text(
+                                                                                                                    logData[index]['paymentDate'],
+                                                                                                                    style: const TextStyle(
+                                                                                                                      fontSize: 14.0,
+                                                                                                                      fontWeight: FontWeight.bold,
+                                                                                                                      color: Colors.black,
+                                                                                                                    ),
+                                                                                                                    textAlign: TextAlign.justify,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                                const SizedBox(height: 20.0),
+                                                                                                                Text(
+                                                                                                                  'Amount Paid: ${logData[index]['amountPaid']}',
+                                                                                                                  style: const TextStyle(
+                                                                                                                    fontSize: 12,
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                    color: Colors.black,
+                                                                                                                  ),
+                                                                                                                  textAlign: TextAlign.justify,
+                                                                                                                ),
+                                                                                                                Text(
+                                                                                                                  'Total Paid: ${logData[index]['totalPaid']}',
+                                                                                                                  style: const TextStyle(
+                                                                                                                    fontSize: 12,
+                                                                                                                    fontWeight: FontWeight.bold,
+                                                                                                                    color: Colors.black,
+                                                                                                                  ),
+                                                                                                                  textAlign: TextAlign.justify,
+                                                                                                                ),
+                                                                                                              ],
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                      );
+                                                                                                    } else {
+                                                                                                      return const Center(child: Text('No Payment Log Found'));
+                                                                                                    }
+                                                                                                  },
+                                                                                                ),
+                                                                                              ],
+                                                                                            );
+                                                                                          } else {
+                                                                                            return const Center(child: Text('No Payment Logs Found'));
+                                                                                          }
+                                                                                        } else {
+                                                                                          return const Center(child: Text('Loading...'));
+                                                                                        }
+                                                                                      },
+                                                                                    ),
+                                                                                  ),
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          },
+                                                                          icon: const Icon(
+                                                                            Icons.browse_gallery,
+                                                                            color:
+                                                                                Colors.white,
+                                                                          ),
+                                                                          label: const Text(
+                                                                            'Payment Log',
+                                                                            style:
+                                                                                TextStyle(color: Colors.white),
+                                                                          )),
+                                                                    ],
                                                                   ),
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: Text(
-                                                                      'Paid: ${data[index]['proj_paid']}',
-                                                                      style: const TextStyle(
-                                                                          fontFamily:
-                                                                              'fontOne',
-                                                                          fontSize:
-                                                                              14),
-                                                                    ),
-                                                                  ),
-                                                                  Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: Text(
-                                                                      'Pending: ${data[index]['proj_balance']}',
-                                                                      style: const TextStyle(
-                                                                          fontFamily:
-                                                                              'fontOne',
-                                                                          fontSize:
-                                                                              14),
-                                                                    ),
-                                                                  ),
+
                                                                   // remarks list
                                                                   const Divider(),
                                                                   const Row(
@@ -1114,7 +1310,7 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
                                                                       ),
                                                                       Spacer(),
                                                                       Text(
-                                                                        'Project Manager Remarks',
+                                                                        'Manager/ Client Remarks',
                                                                         style: TextStyle(
                                                                             fontWeight:
                                                                                 FontWeight.bold),
@@ -1521,301 +1717,432 @@ class _MyPmDashboardState extends State<MyPmDashboard> {
   Widget messages(String id, String remarksBy, String remarks, String projLinks,
       String remarksDate) {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        alignment:
-            remarksBy == 'dev' ? Alignment.centerLeft : Alignment.centerRight,
-        child: remarksBy == 'dev'
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue.shade50,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                      topLeft: Radius.circular(-20.0),
-                    ),
-                    // border: Border.all(
-                    //   color: Colors.grey,
-                    //   width: 1.0,
-                    // ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            DateFormat('MMMM d, y')
-                                .format(DateTime.parse(remarksDate)),
-                            style: const TextStyle(
-                              fontFamily: 'fontTwo',
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: SelectableText(
-                            remarks,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                        projLinks != ''
-                            ? Align(
-                                alignment: Alignment.centerLeft,
-                                child: SizedBox(
-                                  height: 20,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Future<void> launchBrowser(
-                                          Uri url) async {
-                                        if (!await launchUrl(
-                                          url,
-                                          mode: LaunchMode.inAppWebView,
-                                          webViewConfiguration:
-                                              const WebViewConfiguration(
-                                                  enableDomStorage: true),
-                                        )) {
-                                          throw Exception(
-                                              'could not launch $url');
-                                        }
-                                      }
-
-                                      launchBrowser(Uri.parse(projLinks));
-                                      if (projLinks.contains('https://')) {
-                                        launchBrowser(Uri.parse(projLinks));
-                                      } else {
-                                        launchBrowser(
-                                            Uri.parse('https://$projLinks'));
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: projLinks));
-                                      // Toast.show('Text Copied');
-                                    },
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projLinks,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue.shade900,
-                                            ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
-                  ),
+      width: MediaQuery.of(context).size.width,
+      alignment: remarksBy == 'dev'
+          ? Alignment.centerLeft
+          : remarksBy == 'client'
+              ? Alignment.centerRight
+              : Alignment.centerRight,
+      child: remarksBy == 'dev'
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                padding: const EdgeInsets.only(
+                  top: 10,
                 ),
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  padding: const EdgeInsets.only(
-                    top: 10,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue.shade50,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0),
+                    topLeft: Radius.circular(-20.0),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade100,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
+                  // border: Border.all(
+                  //   color: Colors.grey,
+                  //   width: 1.0,
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
                     ),
-                    // border: Border.all(
-                    //   color: Colors.grey,
-                    //   width: 1.0,
-                    // ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      Align(
+                        // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          DateFormat('MMMM d, y')
+                              .format(DateTime.parse(remarksDate)),
+                          style: const TextStyle(
+                            fontFamily: 'fontTwo',
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 8.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            DateFormat('MMMM d, y')
-                                .format(DateTime.parse(remarksDate)),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.justify,
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SelectableText(
+                          remarks,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.justify,
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            remarks,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                        projLinks != ''
-                            ? Align(
-                                alignment: Alignment.centerRight,
-                                child: SizedBox(
-                                  height: 20,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Future<void> launchBrowser(
-                                          Uri url) async {
-                                        if (!await launchUrl(
-                                          url,
-                                          mode: LaunchMode.inAppWebView,
-                                          webViewConfiguration:
-                                              const WebViewConfiguration(
-                                                  enableDomStorage: true),
-                                        )) {
-                                          throw Exception(
-                                              'could not launch $url');
-                                        }
+                      ),
+                      projLinks != ''
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                height: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Future<void> launchBrowser(Uri url) async {
+                                      if (!await launchUrl(
+                                        url,
+                                        mode: LaunchMode.inAppWebView,
+                                        webViewConfiguration:
+                                            const WebViewConfiguration(
+                                                enableDomStorage: true),
+                                      )) {
+                                        throw Exception(
+                                            'could not launch $url');
                                       }
+                                    }
 
+                                    launchBrowser(Uri.parse(projLinks));
+                                    if (projLinks.contains('https://')) {
                                       launchBrowser(Uri.parse(projLinks));
-                                      if (projLinks.contains('https://')) {
-                                        launchBrowser(Uri.parse(projLinks));
-                                      } else {
-                                        launchBrowser(
-                                            Uri.parse('https://$projLinks'));
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: projLinks));
-                                    },
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projLinks,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue,
-                                            ),
-                                            textAlign: TextAlign.left,
+                                    } else {
+                                      launchBrowser(
+                                          Uri.parse('https://$projLinks'));
+                                    }
+                                  },
+                                  onDoubleTap: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: projLinks));
+                                    // Toast.show('Text Copied');
+                                  },
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          projLinks,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.blue.shade900,
                                           ),
-                                        ],
-                                      ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            : const SizedBox(),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              showCupertinoDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return CupertinoAlertDialog(
-                                    title: const Text(
-                                      'Delete remark?',
-                                      style: TextStyle(
-                                          fontFamily: 'fontOne',
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    content: const Text(
-                                      'This action cannot be undone',
-                                      style: TextStyle(
-                                        fontFamily: 'fontTwo',
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      CupertinoDialogAction(
-                                        child: const Text(
-                                          'Cancel',
-                                          style: TextStyle(color: Colors.blue),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      CupertinoDialogAction(
-                                        child: const Text(
-                                          'OK',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                        onPressed: () {
-                                          deleteRemarks(id);
-
-                                          setState(() {
-                                            getFutureMethodforModal =
-                                                Stream.fromFuture(
-                                                    getRemarks(testVariable));
-                                          });
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.red,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
+                            )
+                          : const SizedBox(),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          : remarksBy == 'client'
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade100,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      // border: Border.all(
+                      //   color: Colors.grey,
+                      //   width: 1.0,
+                      // ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Client',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.pink,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              DateFormat('MMMM d, y')
+                                  .format(DateTime.parse(remarksDate)),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              remarks,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          projLinks != ''
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Future<void> launchBrowser(
+                                            Uri url) async {
+                                          if (!await launchUrl(
+                                            url,
+                                            mode: LaunchMode.inAppWebView,
+                                            webViewConfiguration:
+                                                const WebViewConfiguration(
+                                                    enableDomStorage: true),
+                                          )) {
+                                            throw Exception(
+                                                'could not launch $url');
+                                          }
+                                        }
+
+                                        launchBrowser(Uri.parse(projLinks));
+                                        if (projLinks.contains('https://')) {
+                                          launchBrowser(Uri.parse(projLinks));
+                                        } else {
+                                          launchBrowser(
+                                              Uri.parse('https://$projLinks'));
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        Clipboard.setData(
+                                            ClipboardData(text: projLinks));
+                                      },
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              projLinks,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      // border: Border.all(
+                      //   color: Colors.grey,
+                      //   width: 1.0,
+                      // ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              DateFormat('MMMM d, y')
+                                  .format(DateTime.parse(remarksDate)),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              remarks,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          projLinks != ''
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Future<void> launchBrowser(
+                                            Uri url) async {
+                                          if (!await launchUrl(
+                                            url,
+                                            mode: LaunchMode.inAppWebView,
+                                            webViewConfiguration:
+                                                const WebViewConfiguration(
+                                                    enableDomStorage: true),
+                                          )) {
+                                            throw Exception(
+                                                'could not launch $url');
+                                          }
+                                        }
+
+                                        launchBrowser(Uri.parse(projLinks));
+                                        if (projLinks.contains('https://')) {
+                                          launchBrowser(Uri.parse(projLinks));
+                                        } else {
+                                          launchBrowser(
+                                              Uri.parse('https://$projLinks'));
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        Clipboard.setData(
+                                            ClipboardData(text: projLinks));
+                                      },
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              projLinks,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                showCupertinoDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CupertinoAlertDialog(
+                                      title: const Text(
+                                        'Delete remark?',
+                                        style: TextStyle(
+                                            fontFamily: 'fontOne',
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      content: const Text(
+                                        'This action cannot be undone',
+                                        style: TextStyle(
+                                          fontFamily: 'fontTwo',
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        CupertinoDialogAction(
+                                          child: const Text(
+                                            'Cancel',
+                                            style:
+                                                TextStyle(color: Colors.blue),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: const Text(
+                                            'OK',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                          onPressed: () {
+                                            deleteRemarks(id);
+
+                                            setState(() {
+                                              getFutureMethodforModal =
+                                                  Stream.fromFuture(
+                                                      getRemarks(testVariable));
+                                            });
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text(
+                                'Delete',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.red,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ));
+    );
   }
 }

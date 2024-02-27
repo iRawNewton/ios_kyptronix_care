@@ -25,20 +25,24 @@ Future<void> sendEmailAdmin(
     // cc receipents
     List<String> ccEmails = ccText.text.split(',');
     List<Address> ccRecipient = [];
-    for (String ccEmail in ccEmails) {
-      recipients.add(Address(ccEmail.trim()));
+    if (ccEmails.isNotEmpty) {
+      for (String ccEmail in ccEmails) {
+        recipients.add(Address(ccEmail.trim()));
+      }
+      message.ccRecipients = ccRecipient;
     }
-    message.ccRecipients = ccRecipient;
 
     // bcc receipents
     List<String> bccEmails = bccText.text.split(',');
     List<Address> bccRecipient = [];
-    for (String bccEmail in bccEmails) {
-      recipients.add(Address(bccEmail.trim()));
+    if (bccEmails.isNotEmpty) {
+      for (String bccEmail in bccEmails) {
+        recipients.add(Address(bccEmail.trim()));
+      }
+      message.bccRecipients = bccRecipient;
     }
-    message.bccRecipients = bccRecipient;
 
-    var smtpServer = gmail(userEmail, 'cnasttaokkyfzsug');
+    var smtpServer = gmail(userEmail, 'mdotpxcikmlqmmch');
     send(message, smtpServer).then(
       (value) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

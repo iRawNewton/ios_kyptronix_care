@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import '../../../../constant/string_file.dart';
 import '../../../dashboard/client/colorwidget.dart';
 import '../../../sales/saleswidget.dart';
+import 'question_seo.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 
@@ -21,6 +22,7 @@ class QuestionSmo extends StatefulWidget {
 class _QuestionSmoState extends State<QuestionSmo> {
   dynamic data1;
   dynamic data2;
+  bool isVisible = false;
 
   Future<dynamic> getFutureMethod = Future.value();
   dynamic data;
@@ -51,6 +53,7 @@ class _QuestionSmoState extends State<QuestionSmo> {
           } else {
             setState(() {
               toggleLoading = false;
+              isVisible = true;
               hasValue = LottieBuilder.asset(
                   'assets/animations/nodata_available.json');
             });
@@ -216,35 +219,29 @@ class _QuestionSmoState extends State<QuestionSmo> {
                 ),
               ),
             )
-          : Center(child: hasValue),
+          : Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                hasValue,
+                Visibility(
+                  visible: isVisible,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuestionSeo(id: widget.id),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Click to check for SEO Questionnaire',
+                    ),
+                  ),
+                )
+              ],
+            )),
     );
   }
 }
-
-/*
- [{"web_id":"7","name":"Ramandeep ","email":"nagra.raman@gmail.com","phone":"4089306894","company":"","website":"","business":"Insurance ","purpose_website":"Insurance","target_audience":"","design_preference":"","functionality":"","domain_hosting":"","assistance":"","specific_integration":"","logo":"","inspiration_link":"","seo_research":"","multi_lang":"","timeline":"","budget":"","additional_info":"","custom_design":"Yes","ecomm_solution":"No","blog_section":"No","crm":"I donot know","support_package":"No","signup_amount":"100","estimate_cost":"500","additional_cost":"No","propose_timeline":"1 month","created_at":"2023-07-26"}]
-*/
-
-// import 'package:flutter/material.dart';
-// import 'package:lottie/lottie.dart';
-
-// class QuestionPage extends StatefulWidget {
-//   const QuestionPage({super.key, required this.id});
-//   final String id;
-//   @override
-//   State<QuestionPage> createState() => _QuestionPageState();
-// }
-
-// class _QuestionPageState extends State<QuestionPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//         child: Scaffold(
-//       body: SizedBox(
-//         height: double.infinity,
-//         width: double.infinity,
-//         child: LottieBuilder.asset('assets/animations/workProgress.json'),
-//       ),
-//     ));
-//   }
-// }

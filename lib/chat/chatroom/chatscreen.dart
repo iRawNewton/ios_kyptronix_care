@@ -197,39 +197,36 @@ class _ChatRoomState extends State<ChatRoom> {
                   child: SizedBox(
                     height: size.height * 0.4,
                     width: double.infinity,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0, vertical: 15.0),
-                              child: SizedBox(
-                                height: size.height / 12,
-                                width: size.width * 0.83,
-                                child: TextField(
-                                  controller: _message,
-                                  decoration: InputDecoration(
-                                    hintText: 'Send Message',
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 15.0),
+                            child: SizedBox(
+                              height: size.height / 12,
+                              width: size.width * 0.83,
+                              child: TextField(
+                                controller: _message,
+                                decoration: InputDecoration(
+                                  hintText: 'Send Message',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                               ),
                             ),
-                            IconButton(
-                              onPressed: () async {
-                                String x = _message.text;
-                                onSendMessage();
-                                sendNotificationToUser('New Message', x);
-                                // print(_message.text);
-                              },
-                              icon: const Icon(Icons.send),
-                            ),
-                          ]),
-                    ),
+                          ),
+                          IconButton(
+                            onPressed: () async {
+                              String x = _message.text;
+                              onSendMessage();
+                              sendNotificationToUser('New Message', x);
+                              // print(_message.text);
+                            },
+                            icon: const Icon(Icons.send),
+                          ),
+                        ]),
                   ),
                 ),
               ],

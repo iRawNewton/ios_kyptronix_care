@@ -4,6 +4,7 @@ import 'package:ios_kyptronix_care/screens/dashboard/developer/email/uiFolder/ap
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/uiFolder/dmedev.dart';
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/uiFolder/seodev.dart';
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/uiFolder/smodev.dart';
+import 'package:ios_kyptronix_care/screens/dashboard/developer/email/uiFolder/video_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -125,12 +126,20 @@ class _MyDevEmailScreenState extends State<MyDevEmailScreen> {
                                 email: data[0]['cli_email'],
                                 emailPass: data[0]['email_password'],
                               )
-                            : SeoDev(
-                                devId: devID,
-                                devName: data[0]['cli_name'],
-                                email: data[0]['cli_email'],
-                                emailPass: data[0]['email_password'],
-                              ))
+                            : (data[0]['cli_designation'] == 'Video Editor')
+                                ? VideoEditorDev(
+                                    // video editor
+                                    devId: devID,
+                                    devName: data[0]['cli_name'],
+                                    email: data[0]['cli_email'],
+                                    emailPass: data[0]['email_password'],
+                                  )
+                                : SeoDev(
+                                    devId: devID,
+                                    devName: data[0]['cli_name'],
+                                    email: data[0]['cli_email'],
+                                    emailPass: data[0]['email_password'],
+                                  ))
             : const Center(
                 child: Text(
                 'Please wait loading...',

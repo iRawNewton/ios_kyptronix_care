@@ -265,6 +265,8 @@ class _NewProjectRequestState extends State<NewProjectRequest> {
                                                               .toString(),
                                                           email: data[index]
                                                               ['email'],
+                                                          name: data[index]
+                                                              ['cli_name'],
                                                           gross: data[index]
                                                                   ['gross']
                                                               .toString(),
@@ -275,10 +277,11 @@ class _NewProjectRequestState extends State<NewProjectRequest> {
                                                       });
                                                 },
                                                 style: const ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStatePropertyAll(
-                                                  Colors.greenAccent,
-                                                )),
+                                                  backgroundColor:
+                                                      MaterialStatePropertyAll(
+                                                    Colors.greenAccent,
+                                                  ),
+                                                ),
                                                 child: const Text(
                                                   'Assign',
                                                   style: TextStyle(

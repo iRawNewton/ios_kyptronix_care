@@ -4,11 +4,7 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 
 Future<void> sendEmailToNewEmployee(
-  context,
-  toText,
-  ccText,
-  name,
-) async {
+    context, toText, ccText, name, password) async {
   try {
     var userEmail = 'kyptronix@gmail.com';
     var message = Message();
@@ -18,9 +14,10 @@ Future<void> sendEmailToNewEmployee(
     // summary
     message.html = ' <p><b>Dear ${name.text},</b></p>'
         '<p>As we strive to maintain efficiency and transparency in our workflow, I\'d like to remind everyone to update your daily tasks on the Kyptronix LLP mobile application using the login credentials and download link provided here:</p>'
-        '<p>Link: <a href="https://play.google.com/store/apps/details?id=com.kyptronix.dev">Kyptronix Care</a></p>'
+        '<p>Link: <a href="https://play.google.com/store/apps/details?id=com.kyptronix.dev">Kyptronix Care [Android]</a></p>'
+        '<p>Link: <a href="https://apps.apple.com/in/app/kyptronix-care/id6468647884">Kyptronix Care [iOS]</a></p>'
         '<p>User name: ${toText.text}</p>'
-        '<p>Password: Kyptronix2023</p>'
+        '<p>Password: ${password.text}</p>'
         ' <p>This will help us keep track of the progress on each project and ensure that all assigned tasks are duly accounted for.</p>'
         ' <p>Whether you\'re working remotely or at the office, please make it a habit to log in to the application and update your tasks regularly. By doing so, we can collaborate more effectively, identify potential bottlenecks, and address any challenges that may arise promptly.</p>'
         ' <p>If you encounter any technical difficulties or have questions about using the mobile application, feel free to reach out to our support team for assistance. They are available to help you navigate through the system and ensure a smooth experience.</p>'
@@ -51,7 +48,7 @@ Future<void> sendEmailToNewEmployee(
     }
     message.ccRecipients = ccRecipient;
 
-    var smtpServer = gmail(userEmail, 'cnasttaokkyfzsug');
+    var smtpServer = gmail(userEmail, 'mdotpxcikmlqmmch');
     send(message, smtpServer);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

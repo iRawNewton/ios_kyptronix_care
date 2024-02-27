@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -209,7 +210,7 @@ class _MyDevDailyTaskState extends State<MyDevDailyTask> {
                                               builder: (BuildContext context) {
                                                 return Padding(
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 10),
                                                   child: SingleChildScrollView(
                                                     child: Column(
@@ -268,7 +269,7 @@ class _MyDevDailyTaskState extends State<MyDevDailyTask> {
                                                             ),
                                                             Spacer(),
                                                             Text(
-                                                              'Project Manager Remarks',
+                                                              'Manager/ Client',
                                                               style: TextStyle(
                                                                   fontWeight:
                                                                       FontWeight
@@ -476,299 +477,443 @@ class _MyDevDailyTaskState extends State<MyDevDailyTask> {
   Widget messages(String id, String remarksBy, String remarks, String projLinks,
       String remarksDate) {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        alignment:
-            remarksBy == 'dev' ? Alignment.centerLeft : Alignment.centerRight,
-        child: remarksBy == 'dev'
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  padding: const EdgeInsets.only(
-                    top: 10,
+      width: MediaQuery.of(context).size.width,
+      alignment: remarksBy == 'dev'
+          ? Alignment.centerLeft
+          : remarksBy == 'client'
+              ? Alignment.centerRight
+              : Alignment.centerRight,
+      child: remarksBy == 'dev'
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                padding: const EdgeInsets.only(
+                  top: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0),
+                    topLeft: Radius.circular(-20.0),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                      topLeft: Radius.circular(-20.0),
+                  // border: Border.all(
+                  //   color: Colors.grey,
+                  //   width: 1.0,
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
                     ),
-                    // border: Border.all(
-                    //   color: Colors.grey,
-                    //   width: 1.0,
-                    // ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      Align(
+                        // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          DateFormat('MMMM d, y')
+                              .format(DateTime.parse(remarksDate)),
+                          style: const TextStyle(
+                            fontFamily: 'fontTwo',
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            DateFormat('MMMM d, y')
-                                .format(DateTime.parse(remarksDate)),
-                            style: const TextStyle(
-                              fontFamily: 'fontTwo',
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SelectableText(
+                          remarks,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
                           ),
+                          textAlign: TextAlign.justify,
                         ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: SelectableText(
-                            remarks,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.justify,
-                          ),
-                        ),
-                        projLinks != ''
-                            ? Align(
-                                alignment: Alignment.centerLeft,
-                                child: SizedBox(
-                                  height: 20,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Future<void> launchBrowser(
-                                          Uri url) async {
-                                        if (!await launchUrl(
-                                          url,
-                                          mode: LaunchMode.inAppWebView,
-                                          webViewConfiguration:
-                                              const WebViewConfiguration(
-                                                  enableDomStorage: true),
-                                        )) {
-                                          throw Exception(
-                                              'could not launch $url');
-                                        }
+                      ),
+                      projLinks != ''
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                height: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Future<void> launchBrowser(Uri url) async {
+                                      if (!await launchUrl(
+                                        url,
+                                        mode: LaunchMode.inAppWebView,
+                                        webViewConfiguration:
+                                            const WebViewConfiguration(
+                                                enableDomStorage: true),
+                                      )) {
+                                        throw Exception(
+                                            'could not launch $url');
                                       }
+                                    }
 
+                                    launchBrowser(Uri.parse(projLinks));
+                                    if (projLinks.contains('https://')) {
                                       launchBrowser(Uri.parse(projLinks));
-                                      if (projLinks.contains('https://')) {
-                                        launchBrowser(Uri.parse(projLinks));
-                                      } else {
-                                        launchBrowser(
-                                            Uri.parse('https://$projLinks'));
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: projLinks));
-                                      // Toast.show('Text Copied');
-                                    },
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projLinks,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue,
-                                            ),
-                                            textAlign: TextAlign.left,
+                                    } else {
+                                      launchBrowser(
+                                          Uri.parse('https://$projLinks'));
+                                    }
+                                  },
+                                  onDoubleTap: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: projLinks));
+                                    // Toast.show('Text Copied');
+                                  },
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          projLinks,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.blue,
                                           ),
-                                        ],
-                                      ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            : const SizedBox(),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton(
-                            onPressed: () {
-                              showCupertinoDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return CupertinoAlertDialog(
-                                    title: const Text(
-                                      'Delete remark?',
-                                      style: TextStyle(
-                                          fontFamily: 'fontOne',
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    content: const Text(
-                                      'This action cannot be undone',
-                                      style: TextStyle(
-                                        fontFamily: 'fontTwo',
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      CupertinoDialogAction(
-                                        child: const Text(
-                                          'Cancel',
-                                          style: TextStyle(color: Colors.blue),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      CupertinoDialogAction(
-                                        child: const Text(
-                                          'OK',
-                                          style: TextStyle(color: Colors.red),
-                                        ),
-                                        onPressed: () {
-                                          deleteRemarks(id);
-
-                                          setState(() {
-                                            getFutureMethodforModal =
-                                                Stream.fromFuture(
-                                                    getRemarks(testVariable));
-                                          });
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: const Text(
-                              'Delete',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.red,
                               ),
-                              textAlign: TextAlign.left,
+                            )
+                          : const SizedBox(),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          onPressed: () {
+                            showCupertinoDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return CupertinoAlertDialog(
+                                  title: const Text(
+                                    'Delete remark?',
+                                    style: TextStyle(
+                                        fontFamily: 'fontOne',
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  content: const Text(
+                                    'This action cannot be undone',
+                                    style: TextStyle(
+                                      fontFamily: 'fontTwo',
+                                    ),
+                                  ),
+                                  actions: <Widget>[
+                                    CupertinoDialogAction(
+                                      child: const Text(
+                                        'Cancel',
+                                        style: TextStyle(color: Colors.blue),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                    CupertinoDialogAction(
+                                      child: const Text(
+                                        'OK',
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                      onPressed: () {
+                                        deleteRemarks(id);
+
+                                        setState(() {
+                                          getFutureMethodforModal =
+                                              Stream.fromFuture(
+                                                  getRemarks(testVariable));
+                                        });
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.red,
                             ),
+                            textAlign: TextAlign.left,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade50,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                    ),
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 1.0,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 8.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            DateFormat('MMMM d, y')
-                                .format(DateTime.parse(remarksDate)),
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.justify,
-                          ),
+                ),
+              ),
+            )
+          : remarksBy == 'client'
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade200,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: SelectableText(
-                            remarks,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              // fontWeight: FontWeight.w500,
-                              color: Colors.black,
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Client',
+                              style: TextStyle(
+                                fontFamily: 'fontTwo',
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.pink,
+                              ),
                             ),
-                            textAlign: TextAlign.justify,
                           ),
-                        ),
-                        projLinks != ''
-                            ? Align(
-                                alignment: Alignment.centerRight,
-                                child: SizedBox(
-                                  height: 20,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Future<void> launchBrowser(
-                                          Uri url) async {
-                                        if (!await launchUrl(
-                                          url,
-                                          mode: LaunchMode.inAppWebView,
-                                          webViewConfiguration:
-                                              const WebViewConfiguration(
-                                                  enableDomStorage: true),
-                                        )) {
-                                          throw Exception(
-                                              'could not launch $url');
+                          const Gap(5.0),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              DateFormat('MMMM d, y')
+                                  .format(DateTime.parse(remarksDate)),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SelectableText(
+                              remarks,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                // fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          projLinks != ''
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Future<void> launchBrowser(
+                                            Uri url) async {
+                                          if (!await launchUrl(
+                                            url,
+                                            mode: LaunchMode.inAppWebView,
+                                            webViewConfiguration:
+                                                const WebViewConfiguration(
+                                                    enableDomStorage: true),
+                                          )) {
+                                            throw Exception(
+                                                'could not launch $url');
+                                          }
                                         }
-                                      }
 
-                                      launchBrowser(Uri.parse(projLinks));
-                                      if (projLinks.contains('https://')) {
                                         launchBrowser(Uri.parse(projLinks));
-                                      } else {
-                                        launchBrowser(
-                                            Uri.parse('https://$projLinks'));
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: projLinks));
-                                    },
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projLinks,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue,
+                                        if (projLinks.contains('https://')) {
+                                          launchBrowser(Uri.parse(projLinks));
+                                        } else {
+                                          launchBrowser(
+                                              Uri.parse('https://$projLinks'));
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        Clipboard.setData(
+                                            ClipboardData(text: projLinks));
+                                      },
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              projLinks,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue,
+                                              ),
+                                              textAlign: TextAlign.left,
                                             ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              )
-                            : const SizedBox(),
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade50,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1.0,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
                       ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              'Manager',
+                              style: TextStyle(
+                                fontFamily: 'fontTwo',
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepOrange,
+                              ),
+                            ),
+                          ),
+                          const Gap(5.0),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              DateFormat('MMMM d, y')
+                                  .format(DateTime.parse(remarksDate)),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: SelectableText(
+                              remarks,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                // fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          projLinks != ''
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Future<void> launchBrowser(
+                                            Uri url) async {
+                                          if (!await launchUrl(
+                                            url,
+                                            mode: LaunchMode.inAppWebView,
+                                            webViewConfiguration:
+                                                const WebViewConfiguration(
+                                                    enableDomStorage: true),
+                                          )) {
+                                            throw Exception(
+                                                'could not launch $url');
+                                          }
+                                        }
+
+                                        launchBrowser(Uri.parse(projLinks));
+                                        if (projLinks.contains('https://')) {
+                                          launchBrowser(Uri.parse(projLinks));
+                                        } else {
+                                          launchBrowser(
+                                              Uri.parse('https://$projLinks'));
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        Clipboard.setData(
+                                            ClipboardData(text: projLinks));
+                                      },
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              projLinks,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ));
+    );
   }
 }

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../widgets/snack_bar.dart';
+
 class SeoDev extends StatefulWidget {
   const SeoDev(
       {super.key,
@@ -297,6 +299,9 @@ class _SeoDevState extends State<SeoDev> {
                       linkText.clear();
                       sendTo.clear();
                       ccTo.clear();
+                    } else {
+                      customSnackBar(context, 'Fields Empty',
+                          Colors.red.shade400, Colors.white);
                     }
                   },
                   child: const Text(

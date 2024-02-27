@@ -643,73 +643,68 @@ class _MyAdminDashState extends State<MyAdminDash> {
                                                           .symmetric(
                                                           horizontal: 15.0,
                                                           vertical: 0.0),
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
-                                                          children: [
-                                                            const SizedBox(
-                                                                height: 20),
-                                                            const Icon(
-                                                                Icons.person,
-                                                                size: 50),
-                                                            // const Spacer(),
-                                                            const Divider(),
-                                                            Align(
-                                                              alignment:
-                                                                  Alignment
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceEvenly,
+                                                        children: [
+                                                          const SizedBox(
+                                                              height: 20),
+                                                          const Icon(
+                                                              Icons.person,
+                                                              size: 50),
+                                                          // const Spacer(),
+                                                          const Divider(),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Text(
+                                                              data[index]
+                                                                  ['cli_name'],
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontFamily:
+                                                                    'fontTwo',
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        1,
+                                                                        55,
+                                                                        99),
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
                                                                       .center,
-                                                              child: Text(
-                                                                data[index][
-                                                                    'cli_name'],
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontFamily:
-                                                                      'fontTwo',
-                                                                  fontSize: 18,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          1,
-                                                                          55,
-                                                                          99),
-                                                                ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
+                                                            ),
+                                                          ),
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Text(
+                                                              data[index][
+                                                                  'cli_designation'],
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontFamily:
+                                                                    'fontTwo',
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Color
+                                                                    .fromARGB(
+                                                                        255,
+                                                                        1,
+                                                                        55,
+                                                                        99),
                                                               ),
                                                             ),
-                                                            Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              child: Text(
-                                                                data[index][
-                                                                    'cli_designation'],
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontFamily:
-                                                                      'fontTwo',
-                                                                  fontSize: 18,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Color
-                                                                      .fromARGB(
-                                                                          255,
-                                                                          1,
-                                                                          55,
-                                                                          99),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ),

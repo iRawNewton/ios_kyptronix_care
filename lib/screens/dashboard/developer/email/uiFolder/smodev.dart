@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../widgets/snack_bar.dart';
+
 class SmoDev extends StatefulWidget {
   const SmoDev(
       {super.key,
@@ -273,57 +275,76 @@ class _SmoDevState extends State<SmoDev> {
                         MaterialStatePropertyAll(Colors.blue.shade400),
                   ),
                   onPressed: () {
-                    sendEmailSmo(
-                      context,
-                      summaryText,
-                      smpText,
-                      contentText,
-                      campaignText,
-                      smmText,
-                      competitorText,
-                      collaborationText,
-                      recommendText,
-                      challengesText,
-                      nextDayText,
-                      linkText,
-                      widget.devName,
-                      sendTo,
-                      ccTo,
-                      widget.email,
-                      widget.emailPass,
-                    );
+                    if (summaryText.text.isNotEmpty &&
+                        smpText.text.isNotEmpty &&
+                        contentText.text.isNotEmpty &&
+                        campaignText.text.isNotEmpty &&
+                        smmText.text.isNotEmpty &&
+                        competitorText.text.isNotEmpty &&
+                        collaborationText.text.isNotEmpty &&
+                        recommendText.text.isNotEmpty &&
+                        challengesText.text.isNotEmpty &&
+                        nextDayText.text.isNotEmpty &&
+                        linkText.text.isNotEmpty &&
+                        sendTo.text.isNotEmpty &&
+                        ccTo.text.isNotEmpty) {
+                      sendEmailSmo(
+                        context,
+                        summaryText,
+                        smpText,
+                        contentText,
+                        campaignText,
+                        smmText,
+                        competitorText,
+                        collaborationText,
+                        recommendText,
+                        challengesText,
+                        nextDayText,
+                        linkText,
+                        widget.devName,
+                        sendTo,
+                        ccTo,
+                        widget.email,
+                        widget.emailPass,
+                      );
 
-                    DateTime now = DateTime.now();
-                    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
+                      DateTime now = DateTime.now();
+                      String formattedDate =
+                          DateFormat('yyyy-MM-dd').format(now);
 
-                    String txt = 'Summary: \n${summaryText.text}\n \n'
-                        'Social Media Platforms: \n${smpText.text}\n \n'
-                        'Content Creation: \n${contentText.text}\n \n'
-                        'Campaigns and Promotions: \n${campaignText.text}\n \n'
-                        'Social Media Monitoring: \n${smmText.text}\n \n'
-                        'Competitior Analysis: \n${competitorText.text}\n \n'
-                        'Collaborations and Partnerships: \n${collaborationText.text}\n \n'
-                        'Recommendations: \n${recommendText.text}\n \n'
-                        'Challenges and Solutions: \n${challengesText.text}\n \n'
-                        'Next Day\'s Plan: \n${nextDayText.text}\n \n'
-                        'Links: \n${linkText.text}\n';
+                      String txt = 'Summary: \n${summaryText.text}\n \n'
+                          'Social Media Platforms: \n${smpText.text}\n \n'
+                          'Content Creation: \n${contentText.text}\n \n'
+                          'Campaigns and Promotions: \n${campaignText.text}\n \n'
+                          'Social Media Monitoring: \n${smmText.text}\n \n'
+                          'Competitior Analysis: \n${competitorText.text}\n \n'
+                          'Collaborations and Partnerships: \n${collaborationText.text}\n \n'
+                          'Recommendations: \n${recommendText.text}\n \n'
+                          'Challenges and Solutions: \n${challengesText.text}\n \n'
+                          'Next Day\'s Plan: \n${nextDayText.text}\n \n'
+                          'Links: \n${linkText.text}\n';
 
-                    postData(widget.devId, formattedDate, txt, widget.devName);
+                      postData(
+                          widget.devId, formattedDate, txt, widget.devName);
 
-                    summaryText.clear();
-                    smpText.clear();
-                    contentText.clear();
-                    campaignText.clear();
-                    smmText.clear();
-                    competitorText.clear();
-                    collaborationText.clear();
-                    recommendText.clear();
-                    challengesText.clear();
-                    nextDayText.clear();
-                    linkText.clear();
+                      summaryText.clear();
+                      smpText.clear();
+                      contentText.clear();
+                      campaignText.clear();
+                      smmText.clear();
+                      competitorText.clear();
+                      collaborationText.clear();
+                      recommendText.clear();
+                      challengesText.clear();
+                      nextDayText.clear();
+                      linkText.clear();
 
-                    sendTo.clear();
-                    ccTo.clear();
+                      sendTo.clear();
+                      ccTo.clear();
+                    } else {
+                      customSnackBar(context, 'Fields Empty',
+                          Colors.red.shade400, Colors.white);
+                    }
                   },
                   child: const Text(
                     'Send Email',

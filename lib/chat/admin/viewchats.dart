@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:convert';
 import 'package:ios_kyptronix_care/calling/call_invitation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

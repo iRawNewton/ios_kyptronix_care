@@ -89,7 +89,7 @@ class _MySalesPopUpState extends State<MySalesPopUp> {
             'https://crm.kyptronix.in/api_filter_sale.php?assign=1&id=${widget.id}'),
       );
       if (responseSales.statusCode == 200) {
-        createAccount(widget.clientName, widget.email, 'Kyptronix2023');
+        createAccount(widget.clientName, widget.email, 'Kyptronix2024');
 
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => const MySales()));

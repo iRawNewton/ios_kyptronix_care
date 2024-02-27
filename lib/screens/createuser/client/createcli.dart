@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../chat/methods/methods.dart';
 import '../../../constant/string_file.dart';
+import '../../../email/email_to_client.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 
@@ -25,6 +26,7 @@ class _MyPmCreateClientState extends State<MyPmCreateClient> {
   // var maxlengthline = 10;
   bool isVisible = true;
   bool isDataAvailable = true;
+  final ccTo = TextEditingController();
   final id = TextEditingController();
   final cliId = TextEditingController();
   final cliPass = TextEditingController();
@@ -63,6 +65,13 @@ class _MyPmCreateClientState extends State<MyPmCreateClient> {
 
     if (response.statusCode == 200) {
       createAccount(cliName.text, cliEmail.text, cliPass.text);
+      sendEmailToNewClient(
+        context,
+        cliEmail,
+        ccTo,
+        cliName,
+        cliPass,
+      );
       cliId.clear();
       cliPass.clear();
       cliName.clear();
@@ -199,6 +208,7 @@ class _MyPmCreateClientState extends State<MyPmCreateClient> {
 
   @override
   void initState() {
+    ccTo.text = 'kyptronix.dev@gmail.com';
     if (widget.caseOperation == 'update') {
       searchData(widget.clientID);
       setState(() {

@@ -1,20 +1,23 @@
 import 'dart:convert';
-import 'package:ios_kyptronix_care/chat/clientchatfolder/chatlist.dart';
 import 'package:ios_kyptronix_care/screens/dashboard/client/colorwidget.dart';
 import 'package:ios_kyptronix_care/screens/widgets/clientwidgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../../constant/string_file.dart';
 import '../../../notification/notificationui/notificationui.dart';
 import '../../remarks/proj_remarks.dart';
+import 'remarks_form_client.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 
@@ -54,6 +57,14 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
   late Future getRemarksMethod;
   bool showRemarks = false;
   String notiNumber = '';
+
+  List imageList = [
+    {"id": 1, "image_path": 'assets/clientDash/cOne.jpg'},
+    {"id": 2, "image_path": 'assets/clientDash/cTwo.png'},
+    {"id": 3, "image_path": 'assets/clientDash/cThree.png'},
+  ];
+  final CarouselController carouselController = CarouselController();
+  int currentIndex = 0;
 
   getProjID() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -327,6 +338,16 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
     }
   }
 
+  deleteRemarks(id) async {
+    var response = await http.post(
+        Uri.parse('$tempUrl/projectmanager/dashboard/deleteRemarks.php'),
+        body: {
+          'id': id.toString(),
+        });
+    if (response.statusCode == 200) {
+    } else {}
+  }
+
   @override
   void initState() {
     getProjID();
@@ -434,69 +455,147 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
                           ),
                           const SizedBox(height: 10.0),
 
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 10.0),
                           // box border welcome lets schedule
-                          GestureDetector(
-                            onTap: () async {
-                              // void launchEmail() async {
-                              //   final Uri email = Uri(
-                              //     scheme: 'mailto',
-                              //     path: 'kyptronix@gmail.com',
-                              //     queryParameters: {
-                              //       'Subject': Uri.encodeFull(''),
-                              //     },
-                              //   );
-                              //   launchUrl(email,
-                              //       mode: LaunchMode.externalApplication);
-                              // }
+                          // GestureDetector(
+                          //   onTap: () async {
+                          //     // void launchEmail() async {
+                          //     //   final Uri email = Uri(
+                          //     //     scheme: 'mailto',
+                          //     //     path: 'kyptronix@gmail.com',
+                          //     //     queryParameters: {
+                          //     //       'Subject': Uri.encodeFull(''),
+                          //     //     },
+                          //     //   );
+                          //     //   launchUrl(email,
+                          //     //       mode: LaunchMode.externalApplication);
+                          //     // }
 
-                              // launchEmail();
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Container(
-                                width: double.infinity,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.15,
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(255, 1, 55, 99),
+                          //     // launchEmail();
+                          //   },
+                          //   child: Padding(
+                          //     padding:
+                          //         const EdgeInsets.symmetric(horizontal: 5.0),
+                          //     child: Container(
+                          //       decoration: BoxDecoration(
+                          //           color: const Color.fromARGB(255, 1, 55, 99),
+                          //           border: Border.all(
+                          //               width: 2, color: Colors.transparent),
+                          //           borderRadius: BorderRadius.circular(10.0)),
+                          //       child: const AspectRatio(
+                          //         aspectRatio: 21 / 9,
+                          //         child: Padding(
+                          //           padding: EdgeInsets.symmetric(
+                          //               horizontal: 15.0, vertical: 10.0),
+                          //           child: Column(
+                          //             crossAxisAlignment:
+                          //                 CrossAxisAlignment.center,
+                          //             mainAxisAlignment:
+                          //                 MainAxisAlignment.center,
+                          //             children: [
+                          //               Text(
+                          //                 'Welcome to Kyptrionix LLP',
+                          //                 style: TextStyle(
+                          //                     fontFamily: 'fontTwo',
+                          //                     fontSize: 28,
+                          //                     fontWeight: FontWeight.bold,
+                          //                     color: Colors.white),
+                          //               ),
+                          //               // Text(
+                          //               //   // your project information
+                          //               //   'Track your Project',
+                          //               //   textAlign: TextAlign.justify,
+                          //               //   style: TextStyle(
+                          //               //     fontFamily: 'fontTwo',
+                          //               //     fontSize: 24,
+                          //               //     fontWeight: FontWeight.bold,
+                          //               //     color: Colors.white,
+                          //               //   ),
+                          //               // ),
+                          //             ],
+                          //           ),
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+
+                          // ! carousel test
+                          Stack(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  // print(currentIndex);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
                                     border: Border.all(
-                                        width: 2, color: Colors.transparent),
-                                    borderRadius: BorderRadius.circular(10.0)),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 15.0, vertical: 10.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Welcome to Kyptrionix LLP',
-                                        style: TextStyle(
-                                            fontFamily: 'fontTwo',
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white),
-                                      ),
-                                      // Text(
-                                      //   // your project information
-                                      //   'Track your Project',
-                                      //   textAlign: TextAlign.justify,
-                                      //   style: TextStyle(
-                                      //     fontFamily: 'fontTwo',
-                                      //     fontSize: 24,
-                                      //     fontWeight: FontWeight.bold,
-                                      //     color: Colors.white,
-                                      //   ),
-                                      // ),
-                                    ],
+                                      color: Colors.transparent, // Border color
+                                      width: 1.0, // Border width
+                                    ),
+                                    borderRadius: BorderRadius.circular(
+                                        12.0), // Border radius
+                                  ),
+                                  child: CarouselSlider(
+                                    items: imageList
+                                        .map(
+                                          (item) => Image.asset(
+                                            item['image_path'],
+                                            fit: BoxFit.fitWidth,
+                                            width: double.infinity,
+                                          ),
+                                        )
+                                        .toList(),
+                                    carouselController: carouselController,
+                                    options: CarouselOptions(
+                                      scrollPhysics:
+                                          const BouncingScrollPhysics(),
+                                      autoPlay: true,
+                                      aspectRatio: 2,
+                                      viewportFraction: 1,
+                                      autoPlayCurve: Curves.easeIn,
+                                      onPageChanged: (index, reason) {
+                                        setState(() {
+                                          currentIndex = index;
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                              Positioned(
+                                bottom: 10,
+                                left: 0,
+                                right: 0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children:
+                                      imageList.asMap().entries.map((entry) {
+                                    return GestureDetector(
+                                      onTap: () => carouselController
+                                          .animateToPage(entry.key),
+                                      child: Container(
+                                        width:
+                                            currentIndex == entry.key ? 17 : 7,
+                                        height: 7.0,
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: 3.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            color: currentIndex == entry.key
+                                                ? Colors.red
+                                                : Colors.teal),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ],
                           ),
+
+                          // ! test carousle
                           // statstics
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -980,20 +1079,77 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
                                                         padding:
                                                             const EdgeInsets
                                                                 .symmetric(
-                                                                horizontal: 10),
+                                                                horizontal:
+                                                                    10.0,
+                                                                vertical: 20.0),
                                                         child:
                                                             SingleChildScrollView(
                                                           child: Column(
                                                             children: [
                                                               const SizedBox(
-                                                                  height: 15),
-                                                              Text(
-                                                                'Title: ${data[index]['proj_name']}',
-                                                                style: const TextStyle(
-                                                                    fontFamily:
-                                                                        'fontOne',
-                                                                    fontSize:
-                                                                        24),
+                                                                  height: 15.0),
+
+                                                              Row(
+                                                                children: [
+                                                                  SizedBox(
+                                                                    width: MediaQuery.sizeOf(context)
+                                                                            .width *
+                                                                        0.5,
+                                                                    child: Text(
+                                                                      '${data[index]['proj_name']}',
+                                                                      style: const TextStyle(
+                                                                          fontFamily:
+                                                                              'fontOne',
+                                                                          fontSize:
+                                                                              24.0),
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      maxLines:
+                                                                          1, // Limit to one line
+                                                                      softWrap:
+                                                                          false, // Don't wrap the text
+                                                                      textScaler: const TextScaler
+                                                                          .linear(
+                                                                          1.0),
+                                                                    ),
+                                                                  ),
+                                                                  const Spacer(),
+                                                                  ElevatedButton(
+                                                                    style: ElevatedButton
+                                                                        .styleFrom(
+                                                                      backgroundColor: Colors
+                                                                          .green
+                                                                          .shade300,
+                                                                      shape:
+                                                                          RoundedRectangleBorder(
+                                                                        borderRadius:
+                                                                            BorderRadiusDirectional.circular(12),
+                                                                      ),
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator
+                                                                          .push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              MyClientRemarksForm(
+                                                                            projectID:
+                                                                                data[index]['id'],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                    child:
+                                                                        const Text(
+                                                                      'Add Remarks',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.white),
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                               const Divider(),
                                                               // cost
@@ -1038,14 +1194,14 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
                                                               const Row(
                                                                 children: [
                                                                   Text(
-                                                                    'Developer Remarks',
+                                                                    'Developer/ Manager Remarks',
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight.bold),
                                                                   ),
                                                                   Spacer(),
                                                                   Text(
-                                                                    'Project Manager Remarks',
+                                                                    'Your Remarks',
                                                                     style: TextStyle(
                                                                         fontWeight:
                                                                             FontWeight.bold),
@@ -1062,6 +1218,7 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
                                                                   if (showRemarks) {
                                                                     return ListView.builder(
                                                                         shrinkWrap: true,
+                                                                        physics: const NeverScrollableScrollPhysics(),
                                                                         itemCount: remarksData.length,
                                                                         itemBuilder: (context, remarksIndex) {
                                                                           return Align(
@@ -1069,6 +1226,7 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
                                                                                 Alignment.centerLeft,
                                                                             child:
                                                                                 messages(
+                                                                              remarksData[remarksIndex]['id'],
                                                                               remarksData[remarksIndex]['remarks_by'],
                                                                               remarksData[remarksIndex]['remarks'],
                                                                               remarksData[remarksIndex]['proj_links'],
@@ -1307,272 +1465,488 @@ class _MyClientDashboardState extends State<MyClientDashboard> {
                     width: MediaQuery.of(context).size.width * 0.4,
                     child:
                         LottieBuilder.asset('assets/animations/loading.json'))),
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blue.shade50,
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              String? clientID = prefs.getString('cliId');
-              String cliID = clientID.toString();
+        // floatingActionButton: FloatingActionButton(
+        //     backgroundColor: Colors.blue.shade50,
+        //     onPressed: () async {
+        //       SharedPreferences prefs = await SharedPreferences.getInstance();
+        //       String? clientID = prefs.getString('cliId');
+        //       String cliID = clientID.toString();
 
-              hello() {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        MyClientChatList(clientIdForChat: cliID),
-                  ),
-                );
-              }
+        //       hello() {
+        //         Navigator.push(
+        //           context,
+        //           MaterialPageRoute(
+        //             builder: (context) =>
+        //                 MyClientChatList(clientIdForChat: cliID),
+        //           ),
+        //         );
+        //       }
 
-              hello();
-            },
-            child: Icon(
-              Icons.chat_bubble_outline,
-              color: Colors.blue.shade400,
-            )),
+        //       hello();
+        //     },
+        //     child: Icon(
+        //       Icons.chat_bubble_outline,
+        //       color: Colors.blue.shade400,
+        //     )),
         drawer: const MyClientDrawyer(),
       ),
     );
   }
 
   // widget
-  Widget messages(
-      String remarksBy, String remarks, String projLinks, String remarksDate) {
+  Widget messages(String id, String remarksBy, String remarks, String projLinks,
+      String remarksDate) {
     return Container(
-        width: MediaQuery.of(context).size.width,
-        alignment:
-            remarksBy == 'dev' ? Alignment.centerLeft : Alignment.centerRight,
-        child: remarksBy == 'dev'
-            ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  padding: const EdgeInsets.only(
-                    top: 10,
+      width: MediaQuery.of(context).size.width,
+      alignment: remarksBy == 'dev'
+          ? Alignment.centerLeft
+          : remarksBy == 'manager'
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+      child: remarksBy == 'dev'
+          ? Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                padding: const EdgeInsets.only(
+                  top: 10,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.lightBlue.shade50,
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(20.0),
+                    bottomLeft: Radius.circular(20.0),
+                    bottomRight: Radius.circular(20.0),
+                    topLeft: Radius.circular(-20.0),
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue.shade50,
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                      topLeft: Radius.circular(-20.0),
+                  // border: Border.all(
+                  //   color: Colors.grey,
+                  //   width: 1.0,
+                  // ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
                     ),
-                    // border: Border.all(
-                    //   color: Colors.grey,
-                    //   width: 1.0,
-                    // ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      const Align(
+                        // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Developer',
+                          style: TextStyle(
+                            fontFamily: 'fontTwo',
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.purple,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            DateFormat('MMMM d, y')
-                                .format(DateTime.parse(remarksDate)),
-                            style: const TextStyle(
-                              fontFamily: 'fontTwo',
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                      const Gap(8.0),
+                      Align(
+                        // DateFormat('d, MMM y').format(DateTime.parse('2023-02-15'));
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          DateFormat('MMMM d, y')
+                              .format(DateTime.parse(remarksDate)),
+                          style: const TextStyle(
+                            fontFamily: 'fontTwo',
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: SelectableText(
-                            remarks,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.justify,
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: SelectableText(
+                          remarks,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                            // fontWeight: FontWeight.bold,
                           ),
+                          textAlign: TextAlign.justify,
                         ),
-                        projLinks != ''
-                            ? Align(
-                                alignment: Alignment.centerLeft,
-                                child: SizedBox(
-                                  height: 20,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Future<void> launchBrowser(
-                                          Uri url) async {
-                                        if (!await launchUrl(
-                                          url,
-                                          mode: LaunchMode.inAppWebView,
-                                          webViewConfiguration:
-                                              const WebViewConfiguration(
-                                                  enableDomStorage: true),
-                                        )) {
-                                          throw Exception(
-                                              'could not launch $url');
-                                        }
+                      ),
+                      projLinks != ''
+                          ? Align(
+                              alignment: Alignment.centerLeft,
+                              child: SizedBox(
+                                height: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Future<void> launchBrowser(Uri url) async {
+                                      if (!await launchUrl(
+                                        url,
+                                        mode: LaunchMode.inAppWebView,
+                                        webViewConfiguration:
+                                            const WebViewConfiguration(
+                                                enableDomStorage: true),
+                                      )) {
+                                        throw Exception(
+                                            'could not launch $url');
                                       }
+                                    }
 
+                                    launchBrowser(Uri.parse(projLinks));
+                                    if (projLinks.contains('https://')) {
                                       launchBrowser(Uri.parse(projLinks));
-                                      if (projLinks.contains('https://')) {
-                                        launchBrowser(Uri.parse(projLinks));
-                                      } else {
-                                        launchBrowser(
-                                            Uri.parse('https://$projLinks'));
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: projLinks));
-                                      // Toast.show('Text Copied');
-                                    },
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projLinks,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue.shade900,
-                                            ),
-                                            textAlign: TextAlign.left,
+                                    } else {
+                                      launchBrowser(
+                                          Uri.parse('https://$projLinks'));
+                                    }
+                                  },
+                                  onDoubleTap: () {
+                                    Clipboard.setData(
+                                        ClipboardData(text: projLinks));
+                                    // Toast.show('Text Copied');
+                                  },
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          projLinks,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.blue.shade900,
                                           ),
-                                        ],
-                                      ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(height: 10),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            : Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  padding: const EdgeInsets.only(
-                    top: 10,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.green.shade100,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      bottomLeft: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
-                    ),
-                    // border: Border.all(
-                    //   color: Colors.grey,
-                    //   width: 1.0,
-                    // ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
+                              ),
+                            )
+                          : const SizedBox(),
+                      const SizedBox(height: 10),
                     ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 8.0),
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            DateFormat('MMMM d, y')
-                                .format(DateTime.parse(remarksDate)),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.justify,
-                          ),
+                ),
+              ),
+            )
+          : remarksBy == 'client'
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.orange.shade100,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      // border: Border.all(
+                      //   color: Colors.grey,
+                      //   width: 1.0,
+                      // ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
                         ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            remarks,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              DateFormat('MMMM d, y')
+                                  .format(DateTime.parse(remarksDate)),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black54,
+                              ),
+                              textAlign: TextAlign.justify,
                             ),
-                            textAlign: TextAlign.justify,
                           ),
-                        ),
-                        projLinks != ''
-                            ? Align(
-                                alignment: Alignment.centerRight,
-                                child: SizedBox(
-                                  height: 20,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Future<void> launchBrowser(
-                                          Uri url) async {
-                                        if (!await launchUrl(
-                                          url,
-                                          mode: LaunchMode.inAppWebView,
-                                          webViewConfiguration:
-                                              const WebViewConfiguration(
-                                                  enableDomStorage: true),
-                                        )) {
-                                          throw Exception(
-                                              'could not launch $url');
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              remarks,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                // fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          projLinks != ''
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Future<void> launchBrowser(
+                                            Uri url) async {
+                                          if (!await launchUrl(
+                                            url,
+                                            mode: LaunchMode.inAppWebView,
+                                            webViewConfiguration:
+                                                const WebViewConfiguration(
+                                                    enableDomStorage: true),
+                                          )) {
+                                            throw Exception(
+                                                'could not launch $url');
+                                          }
                                         }
-                                      }
 
-                                      launchBrowser(Uri.parse(projLinks));
-                                      if (projLinks.contains('https://')) {
                                         launchBrowser(Uri.parse(projLinks));
-                                      } else {
-                                        launchBrowser(
-                                            Uri.parse('https://$projLinks'));
-                                      }
-                                    },
-                                    onDoubleTap: () {
-                                      Clipboard.setData(
-                                          ClipboardData(text: projLinks));
-                                    },
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projLinks,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blue,
+                                        if (projLinks.contains('https://')) {
+                                          launchBrowser(Uri.parse(projLinks));
+                                        } else {
+                                          launchBrowser(
+                                              Uri.parse('https://$projLinks'));
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        Clipboard.setData(
+                                            ClipboardData(text: projLinks));
+                                      },
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              projLinks,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue,
+                                              ),
+                                              textAlign: TextAlign.left,
                                             ),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
+                                )
+                              : const SizedBox(),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                showCupertinoDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CupertinoAlertDialog(
+                                      title: const Text(
+                                        'Delete remark?',
+                                        style: TextStyle(
+                                            fontFamily: 'fontOne',
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      content: const Text(
+                                        'This action cannot be undone',
+                                        style: TextStyle(
+                                          fontFamily: 'fontTwo',
+                                        ),
+                                      ),
+                                      actions: <Widget>[
+                                        CupertinoDialogAction(
+                                          child: const Text(
+                                            'Cancel',
+                                            style:
+                                                TextStyle(color: Colors.blue),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        CupertinoDialogAction(
+                                          child: const Text(
+                                            'OK',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                          onPressed: () {
+                                            deleteRemarks(id);
+
+                                            // setState(
+                                            //   () {
+                                            //     getFutureMethodforModal =
+                                            //         Stream.fromFuture(
+                                            //             getRemarks(
+                                            //                 testVariable));
+                                            //   },
+                                            // );
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const MyClientDashboard(),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Text(
+                                'Delete',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.red,
                                 ),
-                              )
-                            : const SizedBox(),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        bottomLeft: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                      // border: Border.all(
+                      //   color: Colors.grey,
+                      //   width: 1.0,
+                      // ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3),
+                        ),
                       ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 8.0),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Manager',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.cyan,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          const Gap(8.0),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              DateFormat('MMMM d, y')
+                                  .format(DateTime.parse(remarksDate)),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              remarks,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                // fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.justify,
+                            ),
+                          ),
+                          projLinks != ''
+                              ? Align(
+                                  alignment: Alignment.centerRight,
+                                  child: SizedBox(
+                                    height: 20,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Future<void> launchBrowser(
+                                            Uri url) async {
+                                          if (!await launchUrl(
+                                            url,
+                                            mode: LaunchMode.inAppWebView,
+                                            webViewConfiguration:
+                                                const WebViewConfiguration(
+                                                    enableDomStorage: true),
+                                          )) {
+                                            throw Exception(
+                                                'could not launch $url');
+                                          }
+                                        }
+
+                                        launchBrowser(Uri.parse(projLinks));
+                                        if (projLinks.contains('https://')) {
+                                          launchBrowser(Uri.parse(projLinks));
+                                        } else {
+                                          launchBrowser(
+                                              Uri.parse('https://$projLinks'));
+                                        }
+                                      },
+                                      onDoubleTap: () {
+                                        Clipboard.setData(
+                                            ClipboardData(text: projLinks));
+                                      },
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              projLinks,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.blue,
+                                              ),
+                                              textAlign: TextAlign.left,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ));
+    );
   }
 }

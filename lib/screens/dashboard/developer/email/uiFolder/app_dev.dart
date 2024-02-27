@@ -1,5 +1,6 @@
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/functions/emailfunc.dart';
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/widget/app_dev_widget.dart';
+import 'package:ios_kyptronix_care/screens/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -235,7 +236,16 @@ class _EmailDevState extends State<EmailDev> {
                         MaterialStatePropertyAll(Colors.blue.shade400),
                   ),
                   onPressed: () {
-                    if (sendTo.text != '' && ccTo.text != '') {
+                    if (summaryText.text.isNotEmpty &&
+                        challengesText.text.isNotEmpty &&
+                        progressText.text.isNotEmpty &&
+                        collaborationText.text.isNotEmpty &&
+                        nextStepText.text.isNotEmpty &&
+                        opportunityText.text.isNotEmpty &&
+                        additionalText.text.isNotEmpty &&
+                        linkText.text.isNotEmpty &&
+                        sendTo.text.isNotEmpty &&
+                        ccTo.text.isNotEmpty) {
                       sendEmailDev(
                         context,
                         summaryText,
@@ -279,6 +289,9 @@ class _EmailDevState extends State<EmailDev> {
                       linkText.clear();
                       sendTo.clear();
                       ccTo.clear();
+                    } else {
+                      customSnackBar(context, 'Fields Empty',
+                          Colors.red.shade400, Colors.white);
                     }
                   },
                   child: const Text(

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../widgets/snack_bar.dart';
+
 class DmeDev extends StatefulWidget {
   const DmeDev(
       {super.key,
@@ -263,7 +265,18 @@ class _DmeDevState extends State<DmeDev> {
                         MaterialStatePropertyAll(Colors.blue.shade400),
                   ),
                   onPressed: () {
-                    if (sendTo.text != '' && ccTo.text != '') {
+                    if (introduction.text.isNotEmpty &&
+                        keyMetrics.text.isNotEmpty &&
+                        websiteTraffic.text.isNotEmpty &&
+                        smp.text.isNotEmpty &&
+                        emailMarketing.text.isNotEmpty &&
+                        ppc.text.isNotEmpty &&
+                        seo.text.isNotEmpty &&
+                        contentMarketing.text.isNotEmpty &&
+                        goals.text.isNotEmpty &&
+                        conclusion.text.isNotEmpty &&
+                        sendTo.text.isNotEmpty &&
+                        ccTo.text.isNotEmpty) {
                       sendEmailDme(
                         context,
                         introduction,
@@ -315,6 +328,9 @@ class _DmeDevState extends State<DmeDev> {
                       ccTo.clear();
                       sendTo.clear();
                       ccTo.clear();
+                    } else {
+                      customSnackBar(context, 'Fields Empty',
+                          Colors.red.shade400, Colors.white);
                     }
                   },
                   child: const Text(

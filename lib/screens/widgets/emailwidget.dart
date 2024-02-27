@@ -6,6 +6,7 @@ import 'package:mailer/smtp_server.dart';
 Future<void> projectRelatedEmail(context, toText, subject, body) async {
   // try {
   var userEmail = 'kyptronix@gmail.com';
+  // var userEmail = 'kyptronix.dev@gmail.com';
   var message = Message();
   message.subject = subject;
   // summary
@@ -23,7 +24,8 @@ Future<void> projectRelatedEmail(context, toText, subject, body) async {
 
   // cc receipents
 
-  var smtpServer = gmail(userEmail, 'cnasttaokkyfzsug');
+  var smtpServer = gmail(userEmail, 'mdotpxcikmlqmmch');
+  // var smtpServer = gmail(userEmail, 'wzhdxtseyicxhtoz');
   send(message, smtpServer);
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(

@@ -148,7 +148,6 @@ Future<void> sendEmailGraphics(
   taskCompleted,
   challengesText,
   opportunityText,
-  productivityText,
   linkText,
   devName,
   sendTo,
@@ -175,10 +174,9 @@ Future<void> sendEmailGraphics(
         '<p><b>3. Opportunities for Improvement:</b>'
         '<br>${opportunityText.text}</p>'
         //
-        '<p><b>4. Productivity:</b>'
-        '<br>${productivityText.text}</p>'
+
         //
-        '<p><b>5. Links:</b>'
+        '<p><b>4. Links:</b>'
         '<br>${linkText.text}</p>'
         //
         '<br><br>'
@@ -629,6 +627,114 @@ Future<void> sendEmailDme(
   }
 }
 
+Future<void> sendVideoEditorDev(
+  context,
+  summaryText,
+  challengesText,
+  progressText,
+  collaborationText,
+  nextStepText,
+  opportunityText,
+  linkText,
+  sendTo,
+  ccTo,
+  devName,
+  email,
+  emailPass,
+) async {
+  try {
+    DateTime currentDate = DateTime.now();
+    String formattedDate = DateFormat('dd MMMM, yyyy').format(currentDate);
+    var userEmail = '$email';
+    var message = Message();
+    message.subject = 'KRA Report - $formattedDate';
+    // summary
+    message.html = '<p><h3><b>KRA Date: $formattedDate</b></h3></p>'
+        '<hr>'
+        '<p><b>1. Summary of Tasks Accomplished:</b>'
+        '<br>${summaryText.text}</p>'
+        '<p><b>2. No. of project management:</b>'
+        '<br>${challengesText.text}</p>'
+        '<p><b>3. Business Name:</b>'
+        '<br>${progressText.text}</p>'
+        '<p><b>4. Script:</b>'
+        '<br>${collaborationText.text}</p>'
+        '<p><b>5. Duration:</b>'
+        '<br>${nextStepText.text}</p>'
+        '<p><b>6. No. of videos till date:</b>'
+        '<br>${opportunityText.text}</p>'
+        '<p><b>7. Video links:</b>'
+        '<br>${linkText.text}</p>'
+        '<br><br>'
+        '<p><b>Regards:</b></p>'
+        '<p><b>$devName<b></p>'
+        '<br>';
+
+    message.from = Address(userEmail.toString(), '$devName');
+
+    // receipents
+    List<String> emails = sendTo.text.split(',');
+    List<Address> recipients = [];
+    for (String email in emails) {
+      recipients.add(Address(email.trim()));
+    }
+    message.recipients = recipients;
+
+    // cc receipents
+    List<String> ccEmails = ccTo.text.split(',');
+    List<Address> ccRecipient = [];
+    for (String ccEmail in ccEmails) {
+      recipients.add(Address(ccEmail.trim()));
+    }
+    message.ccRecipients = ccRecipient;
+
+    var smtpServer = gmail(userEmail, '$emailPass');
+    send(message, smtpServer).then(
+      (value) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          showCloseIcon: true,
+          duration: const Duration(seconds: 10),
+          closeIconColor: Colors.white,
+          content: const Text(
+            'Email sent',
+            style: TextStyle(
+              fontFamily: 'fontTwo',
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: Colors.green.shade400,
+          elevation: 8,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          behavior: SnackBarBehavior.floating,
+          width: MediaQuery.of(context).size.width * 0.8,
+        ),
+      ),
+    );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          e.toString(),
+          style: const TextStyle(
+            fontFamily: 'fontTwo',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.red,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        behavior: SnackBarBehavior.floating,
+        width: MediaQuery.of(context).size.width * 0.8,
+      ),
+    );
+  }
+}
 // class RemoteService {
 //   Future postData(devId, sentDate, sentTxt, nameTxt) async {
 //     DateTime now = DateTime.now();

@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:ios_kyptronix_care/screens/dashboard/admin/admindash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +29,7 @@ class _MyAdminLoginState extends State<MyAdminLogin> {
     } catch (e) {
       if (e == 'user-not-found') {
       } else if (e == 'wrong-password') {
+        // ignore: use_build_context_synchronously
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -51,6 +50,7 @@ class _MyAdminLoginState extends State<MyAdminLogin> {
               );
             });
       } else {
+        // ignore: use_build_context_synchronously
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -126,7 +126,7 @@ class _MyAdminLoginState extends State<MyAdminLogin> {
                         // email field
                         TextField(
                           controller: email,
-                          keyboardType: TextInputType.name,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: 'Email id',
                             hintText: 'admin@gmail.com',

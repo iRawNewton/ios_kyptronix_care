@@ -1,5 +1,6 @@
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/functions/emailfunc.dart';
 import 'package:ios_kyptronix_care/screens/dashboard/developer/email/widget/app_dev_widget.dart';
+import 'package:ios_kyptronix_care/screens/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,7 +26,7 @@ class _GraphicsDevState extends State<GraphicsDev> {
   TextEditingController taskCompleted = TextEditingController();
   TextEditingController challengesText = TextEditingController();
   TextEditingController opportunityText = TextEditingController();
-  TextEditingController productivityText = TextEditingController();
+  // TextEditingController productivityText = TextEditingController();
   TextEditingController linkText = TextEditingController();
 
   TextEditingController sendTo = TextEditingController();
@@ -83,11 +84,11 @@ class _GraphicsDevState extends State<GraphicsDev> {
                       '\u2022 Stay updated with the latest design software updates and techniques to enhance efficiency and productivity.'),
 
               // Productivity
-              MyDevEmailWidget(
-                  controller: productivityText,
-                  hintText: 'Productivity',
-                  infoText: '\u2022 Login time\n\n'
-                      '\u2022 Login date'),
+              // MyDevEmailWidget(
+              //     controller: productivityText,
+              //     hintText: 'Productivity',
+              //     infoText: '\u2022 Login time\n\n'
+              //         '\u2022 Login date'),
 
               // links
               MyDevEmailWidget(
@@ -108,7 +109,7 @@ class _GraphicsDevState extends State<GraphicsDev> {
                       pref.setString('taskCompleted', taskCompleted.text);
                       pref.setString('challenges', challengesText.text);
                       pref.setString('opportunity', opportunityText.text);
-                      pref.setString('productivity', productivityText.text);
+                      // pref.setString('productivity', productivityText.text);
                       pref.setString('link', linkText.text);
                     },
                     icon: const Icon(
@@ -130,7 +131,7 @@ class _GraphicsDevState extends State<GraphicsDev> {
                       taskCompleted.text = prefs.getString('taskCompleted')!;
                       challengesText.text = prefs.getString('challenges')!;
                       opportunityText.text = prefs.getString('opportunity')!;
-                      productivityText.text = prefs.getString('productivity')!;
+                      // productivityText.text = prefs.getString('productivity')!;
                       linkText.text = prefs.getString('link')!;
                     },
                     icon: const Icon(
@@ -221,7 +222,6 @@ class _GraphicsDevState extends State<GraphicsDev> {
                     if (taskCompleted.text != '' &&
                         challengesText.text != '' &&
                         opportunityText.text != '' &&
-                        productivityText.text != '' &&
                         linkText.text != '' &&
                         sendTo.text != '' &&
                         ccTo.text != '') {
@@ -230,7 +230,6 @@ class _GraphicsDevState extends State<GraphicsDev> {
                         taskCompleted,
                         challengesText,
                         opportunityText,
-                        productivityText,
                         linkText,
                         widget.devName,
                         sendTo,
@@ -247,7 +246,6 @@ class _GraphicsDevState extends State<GraphicsDev> {
                           'Task Completed: \n${taskCompleted.text}\n \n'
                           'Challenges Faced: \n${challengesText.text}\n \n'
                           'Opportunities for Improvement: \n${opportunityText.text}\n \n'
-                          'Productivity: \n${productivityText.text}\n \n'
                           'Link: \n${linkText.text}\n'; // fix controller
 
                       postData(
@@ -256,11 +254,14 @@ class _GraphicsDevState extends State<GraphicsDev> {
                       taskCompleted.clear();
                       challengesText.clear();
                       opportunityText.clear();
-                      productivityText.clear();
+
                       linkText.clear();
 
                       sendTo.clear();
                       ccTo.clear();
+                    } else {
+                      customSnackBar(context, 'Fields Empty',
+                          Colors.red.shade400, Colors.white);
                     }
                   },
                   child: const Text(

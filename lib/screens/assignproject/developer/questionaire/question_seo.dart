@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import '../../../../constant/string_file.dart';
 import '../../../dashboard/client/colorwidget.dart';
 import '../../../sales/saleswidget.dart';
+import 'question_smo.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 
@@ -21,6 +22,7 @@ class QuestionSeo extends StatefulWidget {
 class _QuestionSeoState extends State<QuestionSeo> {
   dynamic data1;
   dynamic data2;
+  bool isVisible = false;
 
   Future<dynamic> getFutureMethod = Future.value();
   dynamic data;
@@ -51,6 +53,7 @@ class _QuestionSeoState extends State<QuestionSeo> {
           } else {
             setState(() {
               toggleLoading = false;
+              isVisible = true;
               hasValue = LottieBuilder.asset(
                   'assets/animations/nodata_available.json');
             });
@@ -216,7 +219,29 @@ class _QuestionSeoState extends State<QuestionSeo> {
                 ),
               ),
             )
-          : Center(child: hasValue),
+          : Center(
+              child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                hasValue,
+                Visibility(
+                  visible: isVisible,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QuestionSmo(id: widget.id),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Click to check for SMO Questionnaire',
+                    ),
+                  ),
+                )
+              ],
+            )),
     );
   }
 }

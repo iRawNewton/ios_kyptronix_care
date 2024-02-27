@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:ios_kyptronix_care/notification/event_notification.dart';
 import 'package:ios_kyptronix_care/notification/notificationui/notificationui.dart';
 import 'package:ios_kyptronix_care/screens/2selectuser/homescreen.dart';
+import 'package:ios_kyptronix_care/screens/widgets/snack_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -485,10 +486,19 @@ class _MyDevDashboardState extends State<MyDevDashboard> {
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              loadingIndicator = false;
-                            });
-                            postData(context);
+                            if (dateController.text.isNotEmpty &&
+                                taskDone.text.isNotEmpty &&
+                                projectID.text.isNotEmpty &&
+                                progressIndicator.text.isNotEmpty &&
+                                projectLink.text.isNotEmpty) {
+                              setState(() {
+                                loadingIndicator = false;
+                              });
+                              postData(context);
+                            } else {
+                              customSnackBar(context, 'Fields incomplete',
+                                  Colors.red.shade300, Colors.white);
+                            }
                           },
                           style: const ButtonStyle(
                               backgroundColor:
