@@ -1,9 +1,5 @@
 import 'dart:async';
 
-import 'package:ios_kyptronix_care/notification/notificationui/timefunction.dart';
-import 'package:ios_kyptronix_care/screens/daily_task/developer/daily_task.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/client/client_dash.dart';
-import 'package:ios_kyptronix_care/screens/newproject/newproject.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -13,6 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constant/string_file.dart';
 import '../../screens/assignproject/developer/assignproject.dart';
+import '../../screens/daily_task/developer/daily_task.dart';
+import '../../screens/dashboard/client/client_dash.dart';
+import '../../screens/newproject/newproject.dart';
+import 'timefunction.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 

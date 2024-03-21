@@ -287,7 +287,7 @@ class _MyPmCreateClientState extends State<MyPmCreateClient> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10.0),
                             child: TextField(
-                              enabled: editData,
+                              // enabled: editData,
                               controller: cliPass,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,

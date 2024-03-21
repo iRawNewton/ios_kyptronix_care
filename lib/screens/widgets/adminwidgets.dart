@@ -1,12 +1,3 @@
-import 'package:ios_kyptronix_care/chat/admin/findchat.dart';
-import 'package:ios_kyptronix_care/screens/daily_task/admin/dev_list.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/admin/admindash.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/admin/adminmail.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/admin/projectmanagers/pmfile.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/admin/questionaire_admin.dart';
-import 'package:ios_kyptronix_care/screens/list/projectlist.dart';
-import 'package:ios_kyptronix_care/screens/sales/salesmain.dart';
-
 import 'package:flutter/material.dart';
 
 // import 'package:share_plus/share_plus.dart';
@@ -15,8 +6,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:http/http.dart' as http;
 
 import '../../broadcast/sendbroadcast.dart';
+import '../../chat/admin/findchat.dart';
 import '../../chat/methods/methods.dart';
 import '../2selectuser/homescreen.dart';
+import '../daily_task/admin/dev_list.dart';
+import '../dashboard/admin/admindash.dart';
+import '../dashboard/admin/adminmail.dart';
+import '../dashboard/admin/projectmanagers/pmfile.dart';
+import '../dashboard/admin/questionaire_admin.dart';
+import '../list/projectlist.dart';
+import '../sales/salesmain.dart';
 
 class MyAdminDrawyer extends StatefulWidget {
   const MyAdminDrawyer({super.key});

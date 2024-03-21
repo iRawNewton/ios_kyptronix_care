@@ -1,7 +1,8 @@
-import 'package:ios_kyptronix_care/screens/2selectuser/homescreen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../screens/2selectuser/homescreen.dart';
 
 class MyAppGetStarted extends StatefulWidget {
   const MyAppGetStarted({super.key});

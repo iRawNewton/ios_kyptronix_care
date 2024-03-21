@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:ios_kyptronix_care/notification/notificationui/notificationui.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/admin/detailsdialog.dart';
-import 'package:ios_kyptronix_care/screens/dashboard/client/colorwidget.dart';
-import 'package:ios_kyptronix_care/screens/widgets/adminwidgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:ios_kyptronix_care/screens/dashboard/admin/detailsdialog.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../chat/groupchat/groupchatroom.dart';
 import '../../../constant/string_file.dart';
+import '../../../notification/notificationui/notificationui.dart';
+import '../../widgets/adminwidgets.dart';
+import '../client/colorwidget.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 

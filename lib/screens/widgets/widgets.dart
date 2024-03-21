@@ -1,14 +1,14 @@
-import 'package:ios_kyptronix_care/screens/dashboard/admin/adminmail.dart';
-import 'package:ios_kyptronix_care/screens/list/clientlist.dart';
-import 'package:ios_kyptronix_care/screens/list/developerlist.dart';
-import 'package:ios_kyptronix_care/screens/newproject/newproject.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../chat/methods/methods.dart';
 import '../2selectuser/homescreen.dart';
+import '../dashboard/admin/adminmail.dart';
 import '../dashboard/pm/payments/paymenthistory.dart';
 import '../dashboard/pm/pm_dashboard.dart';
+import '../list/clientlist.dart';
+import '../list/developerlist.dart';
 import '../list/managerprojectlist.dart';
+import '../newproject/newproject.dart';
 
 class MyDrawerInfo extends StatefulWidget {
   const MyDrawerInfo({super.key});

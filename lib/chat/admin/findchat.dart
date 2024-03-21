@@ -1,11 +1,12 @@
 import 'dart:convert';
-import 'package:ios_kyptronix_care/chat/admin/viewchats.dart';
-import 'package:ios_kyptronix_care/constant/string_file.dart';
-import 'package:ios_kyptronix_care/screens/widgets/adminwidgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+import '../../constant/string_file.dart';
+import '../../screens/widgets/adminwidgets.dart';
+import 'viewchats.dart';
 
 class MyAdminChatFind extends StatefulWidget {
   const MyAdminChatFind({super.key});

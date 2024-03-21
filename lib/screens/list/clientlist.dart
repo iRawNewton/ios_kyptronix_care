@@ -330,7 +330,7 @@ class _MyClientListState extends State<MyClientList> {
                                                                           caseOperation:
                                                                               'update',
                                                                           clientID:
-                                                                              data[index]['id'])));
+                                                                              data[index]['id'].toString())));
                                                             },
                                                             icon: const Icon(
                                                               Icons.update,

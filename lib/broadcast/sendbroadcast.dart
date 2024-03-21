@@ -1,10 +1,10 @@
-import 'package:ios_kyptronix_care/broadcast/model/emailmodel.dart';
-import 'package:ios_kyptronix_care/broadcast/notification_func.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../constant/string_file.dart';
 import '../screens/dashboard/admin/admindash.dart';
+import 'model/emailmodel.dart';
+import 'notification_func.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 

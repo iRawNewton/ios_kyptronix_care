@@ -1,11 +1,12 @@
-import 'package:ios_kyptronix_care/getstarted/getstarted.dart';
-import 'package:ios_kyptronix_care/screens/2selectuser/homescreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'getstarted/getstarted.dart';
+import 'screens/2selectuser/homescreen.dart';
 
 void main() async {
   // splash screen

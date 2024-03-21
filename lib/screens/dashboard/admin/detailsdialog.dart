@@ -17,9 +17,9 @@ class AdminShowDialog extends StatefulWidget {
     required this.whatsapp,
     required this.email,
   });
-  final String devId;
-  final String phone;
-  final String whatsapp;
+  final int devId;
+  final int phone;
+  final int whatsapp;
   final String email;
 
   @override

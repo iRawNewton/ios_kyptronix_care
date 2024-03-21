@@ -1,12 +1,12 @@
 import 'dart:convert';
 
-import 'package:ios_kyptronix_care/screens/dashboard/admin/projectmanagers/pmprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
 
 import '../../../../constant/string_file.dart';
 import '../../../createuser/pm/createpm.dart';
+import 'pmprofile.dart';
 
 var tempUrl = AppUrl.hostingerUrl;
 
